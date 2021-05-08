@@ -1,0 +1,23 @@
+<?php
+
+use Drupal\computed_back_reference\ComputedParentNodeFieldItemList;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+
+/**
+ * Implements hook_entity_bundle_field_info().
+ */
+function computed_back_reference_entity_bundle_field_info(EntityTypeInterface $entity_type, string $bundle, array $base_field_definitions): ?array {
+  if ($entity_type->id() == 'node' && $bundle == 'child') {
+    $fields['parent'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Parent node'))
+      ->setComputed(TRUE)
+      ->setClass(ComputedParentNodeFieldItemList::class)
+      ->setReadOnly(TRUE)
+      ->setSetting('target_type', 'node');
+
+    return $fields;
+  }
+
+  return NULL;
+}
